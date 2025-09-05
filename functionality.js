@@ -361,9 +361,6 @@ function spawnApple() {
     const apple = document.createElement('div');
     apple.className = 'apple';
 
-    // Create apple with fallback if image doesn't load
-    // apple.innerHTML = '<div style="width: 100%; height: 100%; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">🍎</div>';
-
     // Try to load the actual image, but keep fallback if it fails
     const img = new Image();
     img.onload = function() {
@@ -432,10 +429,6 @@ function spawnApple() {
         apple.style.opacity = '1';
         apple.style.transform = 'scale(1)';
     });
-
-    // const rotations = [-45, -30, -15, 0, 15, 30, 45];
-    // const randomRotation = rotations[Math.floor(Math.random() * rotations.length)];
-    // apple.style.transform = `rotate(${randomRotation}deg)`;
 
     // Auto-remove after 10 seconds if not clicked
     setTimeout(() => {
@@ -524,7 +517,7 @@ function appleClick(apple) {
     box.className = 'apple-message-box fade-shake';
     box.innerHTML = `
         <div class="apple-image">
-            <div style="width: 60px; height: 60px; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;">🍎</div>
+            <img src="freple.png" alt="FrP Eple" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=\\"width: 60px; height: 60px; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;\\">🍎</div>';"/>
         </div>
         <div class="apple-message-content">
             <p>Ai, der kom du borti FRP's råtne politikk.</p>
