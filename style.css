@@ -68,7 +68,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: auto;
     padding: 10px;
     /* Forhindre tekst-seleksjon på mobil */
     -webkit-user-select: none;
@@ -83,7 +83,7 @@ body {
 
 #forward-button {
   position: fixed;          /* fester knappen til viewport */
-  bottom: 20px;             /* 20px fra bunnen */
+  bottom: 40px;             /* 20px fra bunnen */
   left: 50%;                /* midtstilt horisontalt */
   transform: translateX(-50%);
   z-index: 1000;            /* over alt annet innhold */
@@ -95,7 +95,7 @@ body {
     text-align: center;
     color: var(--text-color);
     position: relative;
-    max-width: 600px;
+    max-width: 500px;
     width: 100%;
     min-height: 100vh;           /* sørger for at container alltid fyller skjermen */
     
@@ -143,10 +143,10 @@ body {
 /* === Game area === */
 .game-area {
     position: relative;
-    height: clamp(300px, 45vh, 400px);
+    height: clamp(300px, 45vh, 00px);
     width: 100%;
     margin-top: 50px;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
 }
@@ -674,6 +674,7 @@ body {
         min-height: 120px;
     }
 }
+
 
 
 
