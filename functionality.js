@@ -21,6 +21,10 @@ const maxApplesOnScreen = 4;
 let appleMessageBox = null;
 let appleSpawnInterval;
 
+// === MOBIL TOUCH VARIABLER ===
+let lastTouchEnd = 0;
+let touchStartTime = 0;
+
 // === SLAGORD DATA med emoji-fallbacks ===
 const slogansList = [
     { text: "+10 til gratis tannhelse", emoji: "🦷", fallback: "" },
@@ -44,6 +48,30 @@ const slogansList = [
     { text: "Rettferdig miljøpolitikk!", emoji: "🌲", fallback: "" }
 ];
 
+// === MOBIL TOUCH EVENTS ===
+function preventZoom() {
+    // Forhindre zoom ved dobbelttrykk
+    document.addEventListener('touchend', function (event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+
+    // Forhindre zoom ved pinch
+    document.addEventListener('touchmove', function (event) {
+        if (event.scale !== 1) {
+            event.preventDefault();
+        }
+    }, { passive: false });
+
+    // Forhindre kontekstmeny på lang-trykk
+    document.addEventListener('contextmenu', function (event) {
+        event.preventDefault();
+    });
+}
+
 // === EMOJI SUPPORT CHECK ===
 function supportsEmoji() {
     const canvas = document.createElement('canvas');
@@ -59,7 +87,13 @@ function supportsEmoji() {
 const emojiSupported = supportsEmoji();
 
 // === HOVEDKNAPP ===
-function handleClick() {
+function handleClick(event) {
+    // Forhindre standard oppførsel på mobil
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     if (clickCount >= maxClicks) return;
     clickCount++;
     updateUI();
@@ -237,7 +271,27 @@ function spawnApple() {
     apple.style.left = `${leftPx}px`;
     apple.style.top = `${topPx}px`;
 
-    apple.addEventListener('click', () => appleClick(apple));
+    // Forbedret touch-støtte for epler
+    apple.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        appleClick(apple);
+    });
+
+    // Touch events for bedre mobilrespons
+    apple.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        touchStartTime = Date.now();
+    });
+
+    apple.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const touchDuration = Date.now() - touchStartTime;
+        if (touchDuration < 500) { // Kun korte berøringer
+            appleClick(apple);
+        }
+    });
 
     gameArea.appendChild(apple);
     apples.push(apple);
@@ -283,12 +337,26 @@ function appleClick(apple) {
     mainButton.disabled = true;
     mainButton.style.opacity = '0.6';
 
-    document.getElementById('closeAppleBox').addEventListener('click', () => {
-        box.remove();
+    // Forbedret knapp-handling for mobil
+    const closeBtn = document.getElementById('closeAppleBox');
+    closeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeAppleBox();
+    });
+
+    closeBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        closeAppleBox();
+    });
+
+    function closeAppleBox() {
+        if (box && box.parentNode) {
+            box.remove();
+        }
         appleMessageBox = null;
         mainButton.disabled = false;
         mainButton.style.opacity = '1';
-    });
+    }
 
     // Remove apple
     if (apple && apple.parentNode) {
@@ -352,16 +420,41 @@ function resetGame() {
     startAppleSpawning();
 }
 
+// === MOBIL IMAGE LOADING FIX ===
+function ensureImageLoading() {
+    // Forsøk å laste bilder på nytt hvis de feiler
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        img.onerror = function() {
+            // Prøv å laste bildet på nytt etter kort pause
+            setTimeout(() => {
+                const src = this.src;
+                this.src = '';
+                this.src = src;
+            }, 100);
+        };
+        
+        // Sikre at bilder er synlige på mobil
+        img.style.opacity = '1';
+        img.style.visibility = 'visible';
+    });
+}
+
 // === INITIALISERING ===
 window.onload = function() {
+    // Initialiser mobilforbedringer
+    preventZoom();
+    
     // Set up game image
     if (SETTINGS.gameImage) {
-        document.getElementById('gameImage').innerHTML = `<img src="${SETTINGS.gameImage}" alt="Marie">`;
+        const gameImage = document.getElementById('gameImage');
+        gameImage.innerHTML = `<img src="${SETTINGS.gameImage}" alt="Marie" onload="this.style.opacity=1" onerror="console.log('Bildelastingsfeil: ${SETTINGS.gameImage}')">`;
     }
     
     // Set up logo
     if (SETTINGS.logo.image) {
-        document.getElementById('logoImage').innerHTML = `<img src="${SETTINGS.logo.image}" alt="Logo">`;
+        const logoImage = document.getElementById('logoImage');
+        logoImage.innerHTML = `<img src="${SETTINGS.logo.image}" alt="Logo" onload="this.style.opacity=1" onerror="console.log('Logo lastingsfeil: ${SETTINGS.logo.image}')">`;
     } else {
         document.getElementById('logoImage').innerHTML = `<div style="background: white; border-radius: 50%; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">R</div>`;
     }
@@ -369,10 +462,30 @@ window.onload = function() {
     // Set up tagline with line breaks
     document.getElementById('logoTagline').innerHTML = SETTINGS.logo.tagline.replace(/\n/g, '<br>');
 
+    // Forbedret knapp-handling for mobil
+    const clickButton = document.getElementById('clickButton');
+    
+    // Touch events for hovedknapp
+    clickButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        touchStartTime = Date.now();
+    });
+
+    clickButton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const touchDuration = Date.now() - touchStartTime;
+        if (touchDuration < 500) { // Kun korte berøringer
+            handleClick(e);
+        }
+    });
+
+    // Sikre bildelasting på mobil
+    ensureImageLoading();
+    
     // Start apple spawning
     startAppleSpawning();
     
-    console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
-
+    console.log('Styrkeklikker\'n er klar for mobil! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
 };
 
