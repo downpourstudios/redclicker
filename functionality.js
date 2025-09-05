@@ -18,19 +18,39 @@ const SETTINGS = {
     }
 };
 
+// Teller for sloganPop
+let sloganCounter = 0;
+
 // === LYDFUNKSJON ===
 function playSound(soundKey) {
     const soundFile = SETTINGS.sounds[soundKey];
     if (!soundFile || soundFile === '') return; // Ingen lyd hvis tom
     
     try {
+        // Håndter spesialtilfelle: sloganPop
+        if (soundKey === "sloganPop") {
+            sloganCounter++;
+            
+            // Bare spill hver tredje gang
+            if (sloganCounter % 3 !== 0) return;
+        }
+
         const audio = new Audio(soundFile);
-        audio.volume = 0.3; // Lav volum
+
+        if (soundKey === "sloganPop") {
+            // Volum litt varierende mellom 0.2 og 0.5
+            audio.volume = 0.2 + Math.random() * 0.3;
+        } else {
+            // Standard volum for alt annet
+            audio.volume = 0.3;
+        }
+
         audio.play().catch(e => console.log('Lyd kunne ikke spilles:', e));
     } catch (e) {
         console.log('Lydfeil:', e);
     }
 }
+
 
 // === GLOBALE VARIABLER ===
 let clickCount = 0;
@@ -700,5 +720,6 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
 
