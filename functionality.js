@@ -32,17 +32,17 @@ function playSound(soundKey) {
             sloganCounter++;
 
             // Bare spill hver tredje gang (3, 6, 9, …)
-            if (sloganCounter % 3 !== 0) return;
+            if (sloganCounter % 1 !== 0) return;
         }
 
         const audio = new Audio(soundFile);
 
         if (soundKey === "sloganPop") {
             // Litt variasjon i volum (0.25–0.5)
-            audio.volume = 0.25 + Math.random() * 0.25;
+            audio.volume = 0.05 + Math.random() * 0.15;
 
             // Variasjon i playback rate (0.9–1.1 gir naturlig pitch-ulikhet)
-            audio.playbackRate = 0.9 + Math.random() * 0.2;
+            audio.playbackRate = 0.5 + Math.random() * 1;
         } else {
             // Standard volum for alt annet
             audio.volume = 0.3;
@@ -723,6 +723,7 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
 
 
