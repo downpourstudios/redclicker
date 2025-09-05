@@ -712,6 +712,15 @@ window.onload = function() {
 
 
 
+function updateButtonSize() {
+    const btn = document.getElementById('clickButton');
+    const base = window.innerWidth < 480 ? 80 : 120;
+    btn.style.width = `${base + clickCount * 1.5}px`;
+    btn.style.height = `${base + clickCount * 1.5}px`;
+}
+
+window.addEventListener('resize', updateButtonSize);
+
 
 
 
