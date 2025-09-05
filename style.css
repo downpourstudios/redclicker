@@ -85,31 +85,35 @@
 }
 
 body {
-    font-family: var(--main-font);
-    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    padding: 10px;
-    /* Forhindre tekst-seleksjon på mobil */
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    /* Forhindre tap-highlight på mobil */
-    -webkit-tap-highlight-color: transparent;
+  font-family: var(--main-font);
+  background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;     /* behold horisontal kontroll */
+  overflow-y: auto;       /* tillat vertikal scrolling */
+  padding: 10px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .game-container {
-    text-align: center;
-    color: var(--text-color);
-    position: relative;
-    max-width: 600px;
-    width: 100%;
-    /* Forhindre zoom ved dobbelttrykk */
-    touch-action: manipulation;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 600px;
+  padding-bottom: 120px; /* gir plass til knapp og progress bar */
+  text-align: center;
+  color: var(--text-color);
+  position: relative;
+  touch-action: manipulation;
 }
 
 /* === Tekst spacing === */
@@ -152,16 +156,14 @@ body {
 
 /* === Progress bar === */
 .progress-bar {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 25px;
-    overflow: hidden;
-    z-index: 15;
+  position: relative;
+  margin: 40px auto 0 auto;
+  width: 80%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 25px;
+  overflow: hidden;
+  z-index: 15;
 }
 
 .progress-fill {
@@ -175,29 +177,27 @@ body {
 
 /* === Knapp === */
 .click-button {
-    width: clamp(120px, 25vw, 200px);
-    height: clamp(120px, 25vw, 200px);
-    border: none;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
-    color: var(--button-text-color);
-    font-family: var(--button-font);
-    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 8px 25px var(--shadow-color);
-    margin: 20px auto;
-    display: block;
-    line-height: 1.2;
-    padding: 10px;
-    z-index: 20;
-    /* Forhindre zoom ved dobbelttrykk */
-    touch-action: manipulation;
-    /* Forhindre tap-highlight på mobil */
-    -webkit-tap-highlight-color: transparent;
-    /* Forbedre tapprespons på mobil */
-    -webkit-touch-callout: none;
+  margin-top: 30px;
+  margin-bottom: 40px;
+  width: clamp(120px, 25vw, 200px);
+  height: clamp(120px, 25vw, 200px);
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
+  color: var(--button-text-color);
+  font-family: var(--button-font);
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 25px var(--shadow-color);
+  display: block;
+  line-height: 1.2;
+  padding: 10px;
+  z-index: 20;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 .click-button:hover {
@@ -208,7 +208,21 @@ body {
 .click-button:active {
     transform: scale(0.95);
 }
+@media (max-width: 480px) {
+  .game-container {
+    padding: 20px;
+    min-height: auto;
+  }
 
+  .click-button {
+    width: 140px;
+    height: 140px;
+  }
+
+  .game-image {
+    bottom: 20px;
+  }
+}
 /* === Marie === */
 .game-image {
     position: absolute;
@@ -672,3 +686,4 @@ body {
         min-height: 120px;
     }
 }
+
