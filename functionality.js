@@ -56,25 +56,25 @@ let touchStartTime = 0;
 
 // === SLAGORD DATA med emoji-fallbacks ===
 const slogansList = [
-    { text: "+10 til gratis tannhelse", emoji: "🦷", fallback: "[+]" },
-    { text: "+10 til å gjøre mer for Palestina", emoji: "✊", fallback: "[+]" },
-    { text: "+10 til makspris på strøm", emoji: "⚡", fallback: "[+]" },
-    { text: "+10 til skattekutt for lave og vanlige inntekter!", emoji: "🪙", fallback: "[+]" },
-    { text: "+10 til å stoppe nedbygging av naturen", emoji: "🌲", fallback: "[+]" },
-    { text: "+10 til faste ansettelser", emoji: "📄", fallback: "[+]" },
-    { text: "+10 til rettferdig pensjon", emoji: "⚖️", fallback: "[+]" },
-    { text: "+10 til økte minsteytelser for eldre, syke og uføre", emoji: "🫂", fallback: "[+]" },
-    { text: "+10 til flere ansatte i velferden", emoji: "🗃️", fallback: "[+]" },
-    { text: "Kom igjen!", emoji: "💪", fallback: "!" },
-    { text: "Heia, heia!", emoji: "🎉", fallback: "!" },
-    { text: "Fortsett sånn!", emoji: "🤩", fallback: "!" },
-    { text: "-10 til Sylvi Listhaug!", emoji: "🥀", fallback: "[-]" },
-    { text: "-10 til Erna Solberg!", emoji: "❌", fallback: "[-]" },
-    { text: "-10 til Dag Inge Ulstein!", emoji: "👎", fallback: "[-]" },
-    { text: "Oljefondet ut av Israel!", emoji: "✊", fallback: "!" },
-    { text: "Nei til EUs energimarkedspakke!", emoji: "🚫", fallback: "!" },
-    { text: "Nei til EU, ja til folkestyre!", emoji: "💪", fallback: "!" },
-    { text: "Rettferdig miljøpolitikk!", emoji: "🌲", fallback: "!" }
+    { text: "+10 til gratis tannhelse", emoji: "🦷", fallback: "" },
+    { text: "+10 til å gjøre mer for Palestina", emoji: "✊", fallback: "" },
+    { text: "+10 til makspris på strøm", emoji: "⚡", fallback: "" },
+    { text: "+10 til skattekutt for lave og vanlige inntekter!", emoji: "🪙", fallback: "" },
+    { text: "+10 til å stoppe nedbygging av naturen", emoji: "🌲", fallback: "" },
+    { text: "+10 til faste ansettelser", emoji: "📄", fallback: "" },
+    { text: "+10 til rettferdig pensjon", emoji: "⚖️", fallback: "" },
+    { text: "+10 til økte minsteytelser for eldre, syke og uføre", emoji: "🫂", fallback: "" },
+    { text: "+10 til flere ansatte i velferden", emoji: "🗃️", fallback: "" },
+    { text: "Kom igjen!", emoji: "💪", fallback: "" },
+    { text: "Heia, heia!", emoji: "🎉", fallback: "" },
+    { text: "Fortsett sånn!", emoji: "🤩", fallback: "" },
+    { text: "-10 til Sylvi Listhaug!", emoji: "🥀", fallback: "" },
+    { text: "-10 til Erna Solberg!", emoji: "❌", fallback: "" },
+    { text: "-10 til Dag Inge Ulstein!", emoji: "👎", fallback: "" },
+    { text: "Oljefondet ut av Israel!", emoji: "✊", fallback: "" },
+    { text: "Nei til EUs energimarkedspakke!", emoji: "🚫", fallback: "" },
+    { text: "Nei til EU, ja til folkestyre!", emoji: "💪", fallback: "" },
+    { text: "Rettferdig miljøpolitikk!", emoji: "🌲", fallback: "" }
 ];
 
 // === FORBEDRET DELEFUNKSJON ===
@@ -291,9 +291,9 @@ function showRandomSlogan() {
 
     // Bruk emoji hvis støttet, ellers fallback
     if (emojiSupported && randomSlogan.emoji) {
-        slogan.innerHTML = `${randomSlogan.text} <span class="emoji-symbol">${randomSlogan.emoji}</span>`;
+        slogan.innerHTML = `${randomSlogan.text} <span class="emoji-fallback" data-emoji="${randomSlogan.fallback}">${randomSlogan.emoji}</span>`;
     } else {
-        slogan.innerHTML = `${randomSlogan.text} <span class="emoji-fallback">${randomSlogan.fallback}</span>`;
+        slogan.innerHTML = `${randomSlogan.text} <span class="emoji-fallback" data-emoji="${randomSlogan.fallback}"></span>`;
     }
 
     // Få grid-basert posisjon
@@ -368,7 +368,6 @@ function spawnApple() {
     };
     img.onerror = function() {
         console.log('freple.png kunne ikke lastes, bruker fallback');
-        apple.innerHTML = '<div style="width: 100%; height: 100%; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">🍎</div>';
     };
     img.src = 'freple.png';
 
@@ -507,145 +506,53 @@ function poffAnimation() {
     }, 300);
 }
 
-// === FIKSET APPLE CLICK MED BEDRE MELDINGSBOKS ===
+// === APPLE CLICK ===
 function appleClick(apple) {
     if (appleMessageBox) return;
 
     // Spill eple-lyd
     playSound('applePop');
 
-    // Reduser klikkteller med 5
-    clickCount = Math.max(0, clickCount - 5);
-    updateUI();
-
     const box = document.createElement('div');
     box.className = 'apple-message-box fade-shake';
-    
-    // Enklere og renere meldingsboks uten rare setninger
     box.innerHTML = `
-        <div class="apple-message-content">
-            <div class="apple-icon">🍎</div>
-            <h3>Oops!</h3>
-            <p>Du mistet 5 klikk til FrP's politikk!</p>
-            <button id="closeAppleBox" class="apple-close-btn">OK</button>
+        <div class="apple-image">
+            <img src="freple.png" alt="FrP Eple" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=\\"width: 60px; height: 60px; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;\\">🍎</div>';"/>
         </div>
+        <div class="apple-message-content">
+            <p>Ai, der kom du borti FRP's råtne politikk.</p>
+            <p>Nå mister du litt poeng til fellesskapet.</p>
+        </div>
+        <button id="closeAppleBox" class="apple-close-btn">Kast vekk eplet</button>
     `;
-
-    // Styling for meldingsboksen
-    box.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-        animation: fadeIn 0.3s ease;
-    `;
-
-    // Styling for innholdet
-    const style = document.createElement('style');
-    style.textContent = `
-        .apple-message-box .apple-message-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 300px;
-            margin: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: bounceIn 0.5s ease;
-        }
-        .apple-message-box .apple-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-        .apple-message-box h3 {
-            color: #d32f2f;
-            margin: 0 0 15px 0;
-            font-size: 24px;
-        }
-        .apple-message-box p {
-            margin: 15px 0;
-            color: #333;
-            font-size: 16px;
-        }
-        .apple-message-box .apple-close-btn {
-            background: #d32f2f;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-        .apple-message-box .apple-close-btn:hover {
-            background: #b71c1c;
-            transform: scale(1.05);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes bounceIn {
-            0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
-            50% { transform: scale(1.1) rotate(5deg); opacity: 0.8; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-    `;
-    document.head.appendChild(style);
 
     document.body.appendChild(box);
     appleMessageBox = box;
 
     // Disable main button temporarily
     const mainButton = document.getElementById('clickButton');
-    const originalDisabled = mainButton.disabled;
-    const originalOpacity = mainButton.style.opacity;
     mainButton.disabled = true;
     mainButton.style.opacity = '0.6';
 
     // Forbedret knapp-handling for mobil
     const closeBtn = document.getElementById('closeAppleBox');
-    
-    function closeAppleBox() {
-        if (box && box.parentNode) {
-            box.style.animation = 'fadeOut 0.3s ease';
-            setTimeout(() => {
-                if (box.parentNode) box.remove();
-                if (style.parentNode) style.remove();
-            }, 300);
-        }
-        appleMessageBox = null;
-        mainButton.disabled = originalDisabled;
-        mainButton.style.opacity = originalOpacity;
-    }
-
     closeBtn.addEventListener('click', (e) => {
         e.preventDefault();
         closeAppleBox();
     });
-    
     closeBtn.addEventListener('touchend', (e) => {
         e.preventDefault();
         closeAppleBox();
     });
 
-    // Legg til fadeOut animasjon
-    const fadeOutStyle = document.createElement('style');
-    fadeOutStyle.textContent = `
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+    function closeAppleBox() {
+        if (box && box.parentNode) {
+            box.remove();
         }
-    `;
-    document.head.appendChild(fadeOutStyle);
+        appleMessageBox = null;
+        mainButton.disabled = false;
+        mainButton.style.opacity = '1';
+    }
 
     // Remove apple med animasjon
     if (apple && apple.parentNode) {
