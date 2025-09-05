@@ -28,7 +28,7 @@ async function shareOrCopy(e) {
     } catch (err) {
       // bruker avbrøt / ikke støttet -> faller ned til kopiering
     }
-  }
+
 
   // 2) Kopiér til utklippstavla
   try {
@@ -527,6 +527,7 @@ window.onload = function() {
     
     console.log('Styrkeklikker\'n er klar for mobil! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
 };
+
 
 
 
