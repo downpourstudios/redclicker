@@ -38,7 +38,7 @@ const maxClicks = 100;
 let slogans = [];
 let apples = [];
 const maxSlogansOnScreen = 3;
-const maxApplesOnScreen = 4;
+const maxApplesOnScreen = 3;
 let appleMessageBox = null;
 let appleSpawnInterval;
 let sloganPositions = []; // Track alle brukte posisjoner
@@ -366,7 +366,7 @@ function spawnApple() {
     apple.className = 'apple';
     
     // Create apple with fallback if image doesn't load
-    apple.innerHTML = `<div style="width: 100%; height: 100%; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">🍎</div>`;
+ //   apple.innerHTML = `<div style="width: 100%; height: 100%; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">🍎</div>`;
     
     // Try to load the actual image, but keep fallback if it fails
     const img = new Image();
@@ -700,4 +700,5 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
