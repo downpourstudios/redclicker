@@ -86,8 +86,8 @@ const slogansList = [
     { text: "Fortsett sånn!", emoji: "🤩", fallback: "" },
     { text: "-10 til Sylvi Listhaug!", emoji: "🥀", fallback: "" },
     { text: "-10 til Erna Solberg!", emoji: "❌", fallback: "" },
-    { text: "-10 til Dag Inge Ulstein!", emoji: "👇", fallback: "" },
-    { text: "Oljefondet ut av Israel!", emoji: "🇵🇸", fallback: "" },
+    { text: "-10 til Dag Inge Ulstein!", emoji: "👎", fallback: "" },
+    { text: "Oljefondet ut av Israel!", emoji: "✊", fallback: "" },
     { text: "Nei til EUs energimarkedspakke!", emoji: "🚫", fallback: "" },
     { text: "Nei til EU, ja til folkestyre!", emoji: "💪", fallback: "" },
     { text: "Rettferdig miljøpolitikk!", emoji: "🌲", fallback: "" }
@@ -527,6 +527,7 @@ window.onload = function() {
     
     console.log('Styrkeklikker\'n er klar for mobil! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
 };
+
 
 
 
