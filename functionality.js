@@ -38,10 +38,11 @@ function playSound(soundKey) {
         const audio = new Audio(soundFile);
 
         if (soundKey === "sloganPop") {
-            // Varier volumet mellom 0.2 og 0.5
-            const min = 0.1;
-            const max = 0.3;
-            audio.volume = Math.random() * (max - min) + min;
+            // Litt variasjon i volum (0.25–0.5)
+            audio.volume = 0.25 + Math.random() * 0.25;
+
+            // Variasjon i playback rate (0.9–1.1 gir naturlig pitch-ulikhet)
+            audio.playbackRate = 0.9 + Math.random() * 0.2;
         } else {
             // Standard volum for alt annet
             audio.volume = 0.3;
@@ -722,6 +723,7 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
 
 
