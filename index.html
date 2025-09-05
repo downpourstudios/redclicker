@@ -37,7 +37,9 @@
             <div class="win-title">Nå er vi så store og sterke at vi ikke er til å unngå! <span class="emoji-fallback">💪</span></div>
             <div class="win-message" id="winMessage"></div>
             <div class="win-buttons">
-                <button class="forward-button" onclick="forwardUser()">Del med en venn →</button>
+                <!-- var: onclick="forwardUser()" -->
+               <button class="forward-button" id="shareButton" onclick="shareOrCopy(event)">Del med en venn →</button>
+
                 <button class="reset-button" onclick="resetGame()">Prøv igjen</button>
             </div>
         </div>
@@ -47,3 +49,4 @@
 <script src="functionality.js"></script>
 </body>
 </html>
+
