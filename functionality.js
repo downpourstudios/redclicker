@@ -323,8 +323,8 @@ function appleClick(apple) {
             <img src="freple.png" alt="Eple">
         </div>
         <div class="apple-message-content">
-            <strong><p>Ai, nå kom du borti FRPs råtne politikk.</p></strong>
-            <p>Nå mister du litt poeng til fellesskapet.</p>
+            <p>Ai, hold deg unna de epleskrottene!</p>
+            <p>Du får ikke minuspoeng, men de sakker deg ned litt og får deg til å bruke unødvendige krefter og ressurser...</p>
         </div>
         <button id="closeAppleBox" class="apple-close-btn">Lukk</button>
     `;
@@ -480,13 +480,8 @@ window.onload = function() {
         }
     });
 
-    // Sikre bildelasting på mobil
-    ensureImageLoading();
-    
     // Start apple spawning
     startAppleSpawning();
     
     console.log('Styrkeklikker\'n er klar for mobil! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
 };
-
-
