@@ -9,48 +9,27 @@ const SETTINGS = {
     logo: { 
         image: 'logo_hvit.png',
         tagline: 'Fordi \nfellesskap fungerer' 
+    },
+    // === LYDINNSTILLINGER ===
+    sounds: {
+        winScreen: 'winscreen.mp3', // La stå tom eller legg inn filnavn som 'win.mp3'
+        sloganPop: '', // La stå tom eller legg inn filnavn som 'pop.mp3'
+        applePop: 'eplepop.mp3' // La stå tom eller legg inn filnavn som 'apple.mp3'
     }
 };
 
-async function shareOrCopy(e) {
-  e?.preventDefault();
-  const url = SETTINGS.shareUrl || new URL('.', location.href).href;
-
-  // 1) Forsøk native deling (mobil)
-  if (navigator.share) {
+// === LYDFUNKSJON ===
+function playSound(soundKey) {
+    const soundFile = SETTINGS.sounds[soundKey];
+    if (!soundFile || soundFile === '') return; // Ingen lyd hvis tom
+    
     try {
-      await navigator.share({
-        title: 'Del styrken din med Rødt',
-        text: 'Hjelp Rødt og Marie med å bli store og sterke!',
-        url
-      });
-      return;
-    } catch (err) {
-      // bruker avbrøt / ikke støttet -> faller ned til kopiering
+        const audio = new Audio(soundFile);
+        audio.volume = 0.3; // Lav volum
+        audio.play().catch(e => console.log('Lyd kunne ikke spilles:', e));
+    } catch (e) {
+        console.log('Lydfeil:', e);
     }
-  }
-
-  // 2) Kopiér til utklippstavla
-  try {
-    await navigator.clipboard.writeText(url);
-  } catch {
-    // Fallback for eldre nettlesere
-    const ta = document.createElement('textarea');
-    ta.value = url;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  }
-
-  // 3) Vis “Kopiert!” på knappen en kort stund
-  const btn = document.getElementById('shareButton');
-  if (btn) {
-    const old = btn.textContent;
-    btn.textContent = 'Kopiert! ✅';
-    btn.disabled = true;
-    setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1600);
-  }
 }
 
 // === GLOBALE VARIABLER ===
@@ -58,10 +37,12 @@ let clickCount = 0;
 const maxClicks = 100;
 let slogans = [];
 let apples = [];
-const maxSlogansOnScreen = 2;
+const maxSlogansOnScreen = 3;
 const maxApplesOnScreen = 4;
 let appleMessageBox = null;
 let appleSpawnInterval;
+let sloganPositions = []; // Track alle brukte posisjoner
+let lastSloganTime = 0.5; // Forhindre for rask spawning
 
 // === MOBIL TOUCH VARIABLER ===
 let lastTouchEnd = 0;
@@ -89,6 +70,67 @@ const slogansList = [
     { text: "Nei til EU, ja til folkestyre!", emoji: "💪", fallback: "" },
     { text: "Rettferdig miljøpolitikk!", emoji: "🌲", fallback: "" }
 ];
+
+// === FORBEDRET DELEFUNKSJON ===
+async function shareOrCopy(e) {
+    e?.preventDefault();
+    const url = SETTINGS.shareUrl || window.location.href;
+    const btn = document.getElementById('shareButton');
+    const originalText = btn.textContent;
+
+    try {
+        // Prøv å kopiere til utklippstavla først
+        await navigator.clipboard.writeText(url);
+        
+        // Vis suksessmelding
+        btn.textContent = 'Lenke kopiert! ✅';
+        btn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = 'linear-gradient(135deg, var(--progress-color), var(--progress-color))';
+            btn.disabled = false;
+        }, 2000);
+        
+    } catch (err) {
+        // Fallback for eldre nettlesere
+        try {
+            const textArea = document.createElement('textarea');
+            textArea.value = url;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            btn.textContent = 'Lenke kopiert! ✅';
+            btn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = 'linear-gradient(135deg, var(--progress-color), var(--progress-color))';
+                btn.disabled = false;
+            }, 2000);
+            
+        } catch (fallbackErr) {
+            // Hvis alt feiler, vis lenke i en alert
+            btn.textContent = 'Kunne ikke kopiere automatisk';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+            
+            // Vis lenke i en enkel popup
+            setTimeout(() => {
+                alert(`Kopier denne lenken manuelt:\n\n${url}`);
+            }, 100);
+        }
+    }
+}
 
 // === MOBIL TOUCH EVENTS ===
 function preventZoom() {
@@ -145,7 +187,7 @@ function handleClick(event) {
         clearInterval(appleSpawnInterval);
         setTimeout(() => { 
             poffAnimation(); 
-            showWinScreen(); 
+            setTimeout(() => showWinScreen(), 800); // Lenger delay
         }, 300);
     }
 }
@@ -176,12 +218,73 @@ function updateUI() {
     else if (clickCount >= 10) button.textContent = "DETTE KLARER VI!";
 }
 
-// === SLAGORD FUNKSJON ===
-function showRandomSlogan() {
+// === FORBEDRET SLAGORD-PLASSERING MED GRID SYSTEM ===
+function getNextSloganPosition() {
     const gameArea = document.querySelector('.game-area');
     const areaW = gameArea.offsetWidth;
     const areaH = gameArea.offsetHeight;
+    
+    // Definer et rutenett-system
+    const gridCols = window.innerWidth < 480 ? 2 : 3;
+    const gridRows = 2;
+    
+    const cellWidth = (areaW - 60) / gridCols; // 60px total margin
+    const cellHeight = (areaH * 0.4) / gridRows; // Øvre 40% av området
+    
+    const allPositions = [];
+    
+    // Generer alle mulige posisjoner
+    for (let row = 0; row < gridRows; row++) {
+        for (let col = 0; col < gridCols; col++) {
+            const x = 30 + col * cellWidth + (cellWidth * 0.1); // 10% margin inni hver celle
+            const y = 60 + row * cellHeight + (cellHeight * 0.1);
+            allPositions.push({ x, y, occupied: false });
+        }
+    }
+    
+    // Sjekk hvilke posisjoner som er opptatt
+    slogans.forEach(slogan => {
+        if (!slogan.parentNode) return;
+        
+        const rect = slogan.getBoundingClientRect();
+        const gameRect = gameArea.getBoundingClientRect();
+        const sloganX = rect.left - gameRect.left;
+        const sloganY = rect.top - gameRect.top;
+        
+        // Merk nærmeste grid-posisjon som opptatt
+        allPositions.forEach(pos => {
+            const distance = Math.sqrt(
+                Math.pow(sloganX - pos.x, 2) + 
+                Math.pow(sloganY - pos.y, 2)
+            );
+            if (distance < 100) { // 100px radius
+                pos.occupied = true;
+            }
+        });
+    });
+    
+    // Finn første ledige posisjon
+    const freePositions = allPositions.filter(pos => !pos.occupied);
+    
+    if (freePositions.length > 0) {
+        // Velg tilfeldig fra ledige posisjoner
+        return freePositions[Math.floor(Math.random() * freePositions.length)];
+    }
+    
+    // Fallback: bruk en tilfeldig posisjon
+    return allPositions[Math.floor(Math.random() * allPositions.length)];
+}
 
+// === OPPDATERT SLAGORD FUNKSJON MED TIMING CONTROL ===
+function showRandomSlogan() {
+    const now = Date.now();
+    
+    // Forhindre for rask spawning (minimum 200ms mellom slogans)
+    if (now - lastSloganTime < 200) return;
+    lastSloganTime = now;
+    
+    const gameArea = document.querySelector('.game-area');
+    
     const slogan = document.createElement('div');
     slogan.className = 'slogan';
     
@@ -194,20 +297,17 @@ function showRandomSlogan() {
         slogan.innerHTML = `${randomSlogan.text} <span class="emoji-fallback" data-emoji="${randomSlogan.fallback}"></span>`;
     }
 
-    // Spre slogans i øvre del av game-area, lenger unna toppen
-    const margin = 60;
-    const topMargin = 120; // Økt margin fra toppen
-    const maxX = Math.max(areaW - 250, 100);
-    const maxY = Math.max(areaH * 0.3 - 70, 50); // Redusert område
-
-    const randomX = margin + Math.random() * maxX;
-    const randomY = topMargin + Math.random() * maxY;
-
-    slogan.style.left = `${randomX}px`;
-    slogan.style.top = `${randomY}px`;
+    // Få grid-basert posisjon
+    const position = getNextSloganPosition();
+    
+    slogan.style.left = `${position.x}px`;
+    slogan.style.top = `${position.y}px`;
 
     gameArea.appendChild(slogan);
     slogans.push(slogan);
+    
+    // Spill lyd hvis satt
+    playSound('sloganPop');
 
     // Trigger animasjon
     requestAnimationFrame(() => slogan.classList.add("show"));
@@ -218,16 +318,150 @@ function showRandomSlogan() {
         if (old && old.parentNode) old.remove();
     }
 
-    // Auto-fjern etter 2.5 sek
+    // Auto-fjern etter 3.5 sek
     setTimeout(() => {
         if (slogan && slogan.parentNode) {
             slogan.remove();
             slogans = slogans.filter(s => s !== slogan);
         }
-    }, 2500);
+    }, 1500);
 }
 
-// === WIN SCREEN ===
+// === APPLE SPAWNING SYSTEM MED DEBUG ===
+function startAppleSpawning() {
+    console.log('Starter apple spawning...');
+    
+    // Clear any existing interval
+    if (appleSpawnInterval) {
+        clearInterval(appleSpawnInterval);
+    }
+    
+    // Start med en gang for testing
+    setTimeout(() => {
+        if (clickCount < maxClicks && apples.length < maxApplesOnScreen) {
+            spawnApple();
+        }
+    }, 2000); // Spawn første eple etter 2 sek
+    
+    appleSpawnInterval = setInterval(() => {
+        console.log(`Apple check: ${apples.length}/${maxApplesOnScreen}, clickCount: ${clickCount}/${maxClicks}`);
+        
+        // Only spawn if we haven't reached max apples and game is still running
+        if (apples.length < maxApplesOnScreen && clickCount < maxClicks) {
+            spawnApple();
+        }
+    }, 2000 + Math.random() * 500); // Random interval between 4-7 seconds
+}
+
+function spawnApple() {
+    console.log('Spawning apple...');
+    
+    const gameArea = document.querySelector('.game-area');
+    if (!gameArea) {
+        console.error('Game area not found!');
+        return;
+    }
+    
+    const apple = document.createElement('div');
+    apple.className = 'apple';
+    
+    // Create apple with fallback if image doesn't load
+    apple.innerHTML = `<div style="width: 100%; height: 100%; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">🍎</div>`;
+    
+    // Try to load the actual image, but keep fallback if it fails
+    const img = new Image();
+    img.onload = function() {
+        apple.innerHTML = `<img src="freple.png" alt="FrP Eple" style="width: 100%; height: 100%;">`;
+    };
+    img.onerror = function() {
+        console.log('freple.png kunne ikke lastes, bruker fallback');
+    };
+    img.src = 'freple.png';
+    
+    // Random position in game area (avoid center where Marie is)
+    const areaW = gameArea.offsetWidth;
+    const areaH = gameArea.offsetHeight;
+    
+    console.log(`Game area dimensions: ${areaW}x${areaH}`);
+    
+    let x, y;
+    let attempts = 0;
+    do {
+        x = Math.random() * (areaW - 80) + 40; // 40px margin
+        y = Math.random() * (areaH - 80) + 40;
+        
+        // Ensure apple doesn't spawn too close to center (where Marie is)
+        const centerX = areaW / 2;
+        const centerY = areaH / 2;
+        const distanceFromCenter = Math.sqrt(
+            Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2)
+            
+        );
+        
+        attempts++;
+        if (attempts > 20) break; // Avoid infinite loop
+    } while (Math.sqrt(Math.pow(x - areaW/2, 2) + Math.pow(y - areaH/2, 2)) < 100); // Keep 100px distance from center
+    
+    console.log(`Apple positioned at: ${x}, ${y}`);
+    
+    apple.style.left = `${x}px`;
+    apple.style.top = `${y}px`;
+    apple.style.position = 'absolute';
+    apple.style.width = '30px';
+    apple.style.height = '40px';
+    apple.style.cursor = 'pointer';
+    apple.style.zIndex = '10';
+    apple.style.opacity = '0';
+    apple.style.transform = 'scale(0.5)';
+    apple.style.transition = 'all 0.3s ease';
+    
+    // Add click handler
+    apple.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Apple clicked!');
+        appleClick(apple);
+    });
+    
+    apple.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Apple touched!');
+        appleClick(apple);
+    });
+    
+    gameArea.appendChild(apple);
+    apples.push(apple);
+    
+    console.log(`Apple added to DOM. Total apples: ${apples.length}`);
+    
+    // Animate in
+    requestAnimationFrame(() => {
+        apple.style.opacity = '1';
+        apple.style.transform = 'scale(1)';
+    });
+    //   const rotations = [-45, -30, -15, 0, 15, 30, 45];
+    //const randomRotation = rotations[Math.floor(Math.random() * rotations.length)];
+    // apple.style.transform = `rotate(${randomRotation}deg)`;
+
+    // Auto-remove after 10 seconds if not clicked
+    setTimeout(() => {
+        if (apple && apple.parentNode) {
+            console.log('Removing apple after timeout');
+            apple.style.transition = 'all 0.5s ease';
+            apple.style.opacity = '0';
+            apple.style.transform = 'scale(0.5)';
+            
+            setTimeout(() => {
+                if (apple.parentNode) apple.remove();
+                apples = apples.filter(a => a !== apple);
+                console.log(`Apple removed. Total apples: ${apples.length}`);
+            }, 500);
+        }
+    }, 5000);
+}
+
+// === FORBEDRET WIN SCREEN MED BEDRE TEKSTFORMATERING ===
 function showWinScreen() {
     document.getElementById('gameImage').style.display = 'none';
     if (SETTINGS.winImage) {
@@ -235,131 +469,74 @@ function showWinScreen() {
     }
     document.querySelector('.forward-button').textContent = SETTINGS.forwardButtonText;
     
-    // Formatert tekst med avsnitt
+    // Spill vinnerlyd
+    playSound('winScreen');
+    
+    // Bedre formatert tekst med balanserte avsnitt
     const winMessage = `
-        <p>Nå har du gjort Marie så stor og sterk at hun ikke er til å komme utenom. 
-        Bra jobba!</p>
+        <p>Nå har du gjort Marie så stor og sterk at hun ikke er til å komme utenom. Bra jobba!</p>
+        
         <p>Men for at dette skal skje i virkeligheten må du faktisk gå og stemme på <strong>Rødt.</strong></p>
         
         <p>Din stemme har mye å si for å drive frem den forandringen som trengs. Vi lever i et forskjells-Norge, hvor naturen bygges ned bit for bit og verden ikke gjør alt som trengs for å stanse et pågående folkemord.</p>
         
-        <p>Les mer om hva Rødt vil her: <a href="https://roedt.no/stem" target="_blank">https://roedt.no/stem</a></p>
+        <p>Les mer om hva Rødt vil her:<br><a href="https://roedt.no/stem" target="_blank">https://roedt.no/stem</a></p>
         
-        <p>Vi lover å bruke den styrken du gir oss.</p> 
-        <p><strong>Godt valg!</strong></p>
+        <p>Vi lover å bruke den styrken du gir oss.<br><strong>Godt valg!</strong></p>
     `;
     
     document.getElementById('winMessage').innerHTML = winMessage;
-    document.getElementById('winScreen').style.display = 'flex';
+    
+    // Vis win screen MED MER SYNLIG ANIMASJON
+    const winScreen = document.getElementById('winScreen');
+    const winContent = winScreen.querySelector('.win-content');
+    
+    winScreen.style.display = 'flex';
+    
+    // Kraftigere animasjon
+    winContent.style.opacity = '0';
+    winContent.style.transform = 'scale(0.5) translateY(100px) rotate(-5deg)';
+    winContent.style.transition = 'all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)'; // Bounce effect
+    
+    // Animert bakgrunn
+    winScreen.style.backgroundColor = 'rgba(0,0,0,0)';
+    winScreen.style.transition = 'background-color 0.8s ease';
+    
+    setTimeout(() => {
+        winContent.style.opacity = '1';
+        winContent.style.transform = 'scale(1) translateY(0) rotate(0deg)';
+        winScreen.style.backgroundColor = 'rgba(0,0,0,0.9)';
+    }, 50);
 }
 
-// === POOF ANIMASJON ===
+// === FORBEDRET POOF ANIMASJON ===
 function poffAnimation() {
     const container = document.getElementById('gameImage');
-    container.style.transition = 'transform 1s ease';
-    container.style.transform += ' scale(1.2)';
+    
+    // Mer dramatisk poof med flere steg
+    container.style.transition = 'transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+    container.style.transform += ' scale(1.4) rotate(15deg)';
+    
     setTimeout(() => { 
-        container.style.transform = container.style.transform.replace(' scale(1.2)', ''); 
-    }, 100);
-}
-
-// === EPLER ===
-function spawnApple() {
-    if (clickCount >= 99) return;
-    if (apples.length >= maxApplesOnScreen) return;
-
-    const gameArea = document.querySelector('.game-area');
-    const areaRect = gameArea.getBoundingClientRect();
-    const progressBar = document.querySelector('.progress-bar');
-    const progressRect = progressBar.getBoundingClientRect();
-
-    const apple = document.createElement('img');
-    apple.src = 'freple.png';
-    apple.className = 'apple';
-    apple.alt = 'Eple';
-
-    const rotations = [-45, -30, -15, 0, 15, 30, 45];
-    const randomRotation = rotations[Math.floor(Math.random() * rotations.length)];
-    apple.style.transform = `rotate(${randomRotation}deg)`;
-
-    // Plasser epler under progress bar med bedre spredt plassering
-    let leftPx, topPx, safe = false;
-    let attempts = 0;
-    
-    const progressBarBottom = progressRect.bottom - areaRect.top;
-    const minTop = progressBarBottom + 15; // 15px under progress bar
-    const maxTop = areaRect.height - 70; // Ikke helt i bunnen
-    
-    const minSpacing = 80; // Økt minimum avstand mellom epler
-    
-    while (!safe && attempts < 15) {
-        leftPx = 30 + Math.random() * (areaRect.width - 90); // Mer margin fra sidene
-        topPx = minTop + Math.random() * (maxTop - minTop);
-        
-        safe = !apples.some(a => {
-            const rect = a.getBoundingClientRect();
-            const distance = Math.sqrt(
-                Math.pow(rect.x - (areaRect.left + leftPx), 2) + 
-                Math.pow(rect.y - (areaRect.top + topPx), 2)
-            );
-            return distance < minSpacing;
-        });
-        attempts++;
-    }
-
-    apple.style.left = `${leftPx}px`;
-    apple.style.top = `${topPx}px`;
-
-    // Forbedret touch-støtte for epler
-    apple.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        appleClick(apple);
-    });
-
-    // Touch events for bedre mobilrespons
-    apple.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        touchStartTime = Date.now();
-    });
-
-    apple.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const touchDuration = Date.now() - touchStartTime;
-        if (touchDuration < 500) { // Kun korte berøringer
-            appleClick(apple);
-        }
-    });
-
-    gameArea.appendChild(apple);
-    apples.push(apple);
-
-    // Auto remove etter 5-7 sek
-    setTimeout(() => {
-        if (apple && apple.parentNode) {
-            apple.remove();
-            apples = apples.filter(a => a !== apple);
-        }
-    }, 5000 + Math.random() * 2000);
-}
-
-function startAppleSpawning() {
-    appleSpawnInterval = setInterval(() => {
-        if (clickCount < 99) spawnApple();
-    }, 1200 + Math.random() * 1800);
+        container.style.transition = 'transform 0.6s ease, opacity 0.4s ease';
+        container.style.transform = container.style.transform.replace(' scale(1.4) rotate(15deg)', ' scale(2) rotate(-10deg)'); 
+        container.style.opacity = '0';
+    }, 300);
 }
 
 // === APPLE CLICK ===
 function appleClick(apple) {
     if (appleMessageBox) return;
+    
+    // Spill eple-lyd
+    playSound('applePop');
 
     const box = document.createElement('div');
     box.className = 'apple-message-box fade-shake';
     
     box.innerHTML = `
         <div class="apple-image">
-            <img src="freple.png" alt="Eple">
+            <div style="width: 60px; height: 60px; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;">🍎</div>
         </div>
         <div class="apple-message-content">
             <p>Ai, der kom du borti FRP's råtne politikk.</p>
@@ -397,10 +574,15 @@ function appleClick(apple) {
         mainButton.style.opacity = '1';
     }
 
-    // Remove apple
+    // Remove apple med animasjon
     if (apple && apple.parentNode) {
-        apple.remove();
-        apples = apples.filter(a => a !== apple);
+        apple.style.transition = 'all 0.3s ease';
+        apple.style.opacity = '0';
+        apple.style.transform += ' scale(0.5) rotate(180deg)';
+        setTimeout(() => {
+            if (apple.parentNode) apple.remove();
+            apples = apples.filter(a => a !== apple);
+        }, 300);
     }
 }
 
@@ -415,12 +597,14 @@ function forwardUser() {
 
 function resetGame() {
     clickCount = 0;
+    lastSloganTime = 0;
     
     // Fjern alle slogans
     slogans.forEach(s => {
         if (s && s.parentNode) s.remove();
     });
     slogans = [];
+    sloganPositions = [];
     
     // Reset progress bar
     document.getElementById('progressFill').style.width = '0%';
@@ -432,7 +616,8 @@ function resetGame() {
     gameImage.style.left = '50%';
     gameImage.style.transform = 'translateX(-50%)';
     gameImage.style.display = 'block';
-    gameImage.style.filter = 'drop-shadow(0px 4px 20px rgba(255, 255, 255, 0))'; // Reset glow
+    gameImage.style.opacity = '1';
+    gameImage.style.filter = 'drop-shadow(0px 4px 20px rgba(255, 255, 255, 0))';
     
     // Reset button text
     document.getElementById('clickButton').textContent = 'SETT I GANG!';
@@ -461,11 +646,9 @@ function resetGame() {
 
 // === MOBIL IMAGE LOADING FIX ===
 function ensureImageLoading() {
-    // Forsøk å laste bilder på nytt hvis de feiler
     const images = document.querySelectorAll('img');
     images.forEach(img => {
         img.onerror = function() {
-            // Prøv å laste bildet på nytt etter kort pause
             setTimeout(() => {
                 const src = this.src;
                 this.src = '';
@@ -473,7 +656,6 @@ function ensureImageLoading() {
             }, 100);
         };
         
-        // Sikre at bilder er synlige på mobil
         img.style.opacity = '1';
         img.style.visibility = 'visible';
     });
@@ -481,16 +663,13 @@ function ensureImageLoading() {
 
 // === INITIALISERING ===
 window.onload = function() {
-    // Initialiser mobilforbedringer
     preventZoom();
     
-    // Set up game image
     if (SETTINGS.gameImage) {
         const gameImage = document.getElementById('gameImage');
         gameImage.innerHTML = `<img src="${SETTINGS.gameImage}" alt="Marie" onload="this.style.opacity=1" onerror="console.log('Bildelastingsfeil: ${SETTINGS.gameImage}')">`;
     }
     
-    // Set up logo
     if (SETTINGS.logo.image) {
         const logoImage = document.getElementById('logoImage');
         logoImage.innerHTML = `<img src="${SETTINGS.logo.image}" alt="Logo" onload="this.style.opacity=1" onerror="console.log('Logo lastingsfeil: ${SETTINGS.logo.image}')">`;
@@ -498,13 +677,10 @@ window.onload = function() {
         document.getElementById('logoImage').innerHTML = `<div style="background: white; border-radius: 50%; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">R</div>`;
     }
     
-    // Set up tagline with line breaks
     document.getElementById('logoTagline').innerHTML = SETTINGS.logo.tagline.replace(/\n/g, '<br>');
 
-    // Forbedret knapp-handling for mobil
     const clickButton = document.getElementById('clickButton');
     
-    // Touch events for hovedknapp
     clickButton.addEventListener('touchstart', (e) => {
         e.preventDefault();
         touchStartTime = Date.now();
@@ -514,21 +690,13 @@ window.onload = function() {
         e.preventDefault();
         e.stopPropagation();
         const touchDuration = Date.now() - touchStartTime;
-        if (touchDuration < 500) { // Kun korte berøringer
+        if (touchDuration < 500) {
             handleClick(e);
         }
     });
 
-    // Start apple spawning
     startAppleSpawning();
     
-    console.log('Styrkeklikker\'n er klar for mobil! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
+    console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
+    console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
-
-
-
-
-
-
-
-
