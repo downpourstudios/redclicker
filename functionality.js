@@ -63,7 +63,7 @@ const slogansList = [
     { text: "+10 til å stoppe nedbygging av naturen", emoji: "🌲", fallback: "" },
     { text: "+10 til faste ansettelser", emoji: "📄", fallback: "" },
     { text: "+10 til rettferdig pensjon", emoji: "⚖️", fallback: "" },
-    { text: "+10 til økte minsteytelser for eldre, syke og uføre", emoji: "🫂", fallback: "" },
+    { text: "+10 til økte minsteytelser for eldre, syke og uføre", emoji: "❤️", fallback: "" },
     { text: "+10 til flere ansatte i velferden", emoji: "🗃️", fallback: "" },
     { text: "Kom igjen!", emoji: "💪", fallback: "" },
     { text: "Heia, heia!", emoji: "🎉", fallback: "" },
@@ -678,4 +678,5 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
