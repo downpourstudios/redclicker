@@ -1,6 +1,7 @@
 // === INNSTILLINGER ===
 const SETTINGS = {
     forwardUrl: 'https://roedt.no/stem',
+   shareUrl: 'https://downpourstudios.github.io/redclicker/',
     winImage: 'logo_hvit.png',
      gameImage: './marie.png', // viktig med ./ her
     forwardButtonText: 'Del med en venn →',
@@ -9,6 +10,27 @@ const SETTINGS = {
         image: 'logo_hvit.png',
         tagline: 'Fordi \nfellesskap fungerer' 
     }
+};
+
+// vanlig redirect-knapp (hvis du har en sånn fra før)
+function goToForwardUrl() {
+    window.location.href = SETTINGS.forwardUrl;
+}
+
+// del med en venn
+function copyLink() {
+    navigator.clipboard.writeText(SETTINGS.shareUrl).then(() => {
+        const btn = document.getElementById("forward-button");
+        const oldText = btn.innerText;
+        btn.innerText = "Kopiert! ✅";
+
+        setTimeout(() => {
+            btn.innerText = oldText;
+        }, 2000);
+    }).catch(err => {
+        console.error('Kunne ikke kopiere: ', err);
+    });
+}
 };
 
 // === GLOBALE VARIABLER ===
@@ -482,5 +504,6 @@ window.onload = function() {
     
     console.log('Styrkeklikker\'n er klar for mobil! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
 };
+
 
 
