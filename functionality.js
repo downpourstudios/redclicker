@@ -2,7 +2,7 @@
 const SETTINGS = {
     forwardUrl: 'https://roedt.no/stem',
     winImage: 'logo_hvit.png',
-    gameImage: 'Marie_utklipp2.png',
+    gameImage: 'marie_utklipp2.png',
     forwardButtonText: 'Del med en venn →',
     openInNewTab: true,
     logo: { 
@@ -375,3 +375,4 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
 
 };
+
