@@ -1,4 +1,4 @@
-/* === FONT IMPORT === */
+r/* === FONT IMPORT === */
 @font-face {
     font-family: 'Suisse';
     src: url('fonts/suisse.woff2') format('woff2'),
@@ -271,7 +271,7 @@ body {
     padding: clamp(20px, 4vw, 40px);
     border-radius: 20px;
     text-align: center;
-    max-width: 700px;
+    max-width: 600px;
     width: 100%;
     max-height: 90vh;
     color: var(--text-color);
@@ -326,8 +326,8 @@ body {
     font-size: clamp(0.9rem, 2.5vw, 1rem);
     line-height: 1;
     margin-bottom: 30px;
-    text-align: justify;
-    max-width: 650px;
+    text-align: center;
+    max-width: 500px;
     /* Tillat tekst-seleksjon i win message */
     -webkit-user-select: text;
     -moz-user-select: text;
@@ -649,3 +649,4 @@ body {
         min-height: 120px;
     }
 }
+
