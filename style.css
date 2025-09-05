@@ -205,10 +205,10 @@ body {
 /* === Marie === */
 .game-image {
     position: absolute;
-    bottom: 25px;
+    bottom: 23px; /* Justert for å ligge helt på progressbaren */
     left: 50%;
     transform: translateX(-50%);
-    width: clamp(70px, 12vw, 90px);
+    width: clamp(80px, 12vw, 100px); /* Matchende startstørrelse som i JS */
     height: auto;
     transition: all 0.3s ease;
     pointer-events: none;
@@ -728,3 +728,4 @@ body {
         height: clamp(350px, 45vh, 450px);
     }
 }
+
