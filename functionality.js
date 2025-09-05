@@ -517,7 +517,7 @@ function appleClick(apple) {
     box.className = 'apple-message-box fade-shake';
     box.innerHTML = `
         <div class="apple-image">
-            <img src="freple.png" alt="FrP Eple" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=\\"width: 60px; height: 60px; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;">🍎</div>';"/>
+            <img src="freple.png" alt="FrP Eple" style="width: 60px; height: 60px; object-fit: contain;" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style="width: 60px; height: 60px; background: red; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;">🍎</div>';"/>
         </div>
         <div class="apple-message-content">
             <p>Ai, der kom du borti FRP's råtne politikk.</p>
@@ -678,5 +678,6 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
 
