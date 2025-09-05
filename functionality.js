@@ -12,24 +12,47 @@ const SETTINGS = {
     }
 };
 
-// vanlig redirect-knapp (hvis du har en sånn fra før)
-function goToForwardUrl() {
-    window.location.href = SETTINGS.forwardUrl;
+async function shareOrCopy(e) {
+  e?.preventDefault();
+  const url = SETTINGS.shareUrl || new URL('.', location.href).href;
+
+  // 1) Forsøk native deling (mobil)
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: 'Styrkeklikker’n',
+        text: 'Gjør Marie stor og sterk 💪',
+        url
+      });
+      return;
+    } catch (err) {
+      // bruker avbrøt / ikke støttet -> faller ned til kopiering
+    }
+  }
+
+  // 2) Kopiér til utklippstavla
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch {
+    // Fallback for eldre nettlesere
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+
+  // 3) Vis “Kopiert!” på knappen en kort stund
+  const btn = document.getElementById('shareButton');
+  if (btn) {
+    const old = btn.textContent;
+    btn.textContent = 'Kopiert! ✅';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1600);
+  }
 }
 
-// del med en venn
-function copyLink() {
-    navigator.clipboard.writeText(SETTINGS.shareUrl).then(() => {
-        const btn = document.getElementById("forward-button");
-        const oldText = btn.innerText;
-        btn.innerText = "Kopiert! ✅";
-
-        setTimeout(() => {
-            btn.innerText = oldText;
-        }, 2000);
-    }).catch(err => {
-        console.error('Kunne ikke kopiere: ', err);
-    });
 }
 };
 
@@ -504,6 +527,7 @@ window.onload = function() {
     
     console.log('Styrkeklikker\'n er klar for mobil! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
 };
+
 
 
 
