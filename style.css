@@ -57,6 +57,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
 }
 
 body {
@@ -68,6 +70,13 @@ body {
     align-items: center;
     overflow: hidden;
     padding: 10px;
+    /* Forhindre tekst-seleksjon på mobil */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Forhindre tap-highlight på mobil */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .game-container {
@@ -76,6 +85,8 @@ body {
     position: relative;
     max-width: 600px;
     width: 100%;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
 }
 
 /* === Tekst spacing === */
@@ -112,6 +123,8 @@ body {
     width: 100%;
     margin-top: 50px;
     margin-bottom: 30px;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
 }
 
 /* === Progress bar === */
@@ -156,6 +169,12 @@ body {
     line-height: 1.2;
     padding: 10px;
     z-index: 20;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
+    /* Forhindre tap-highlight på mobil */
+    -webkit-tap-highlight-color: transparent;
+    /* Forbedre tapprespons på mobil */
+    -webkit-touch-callout: none;
 }
 
 .click-button:hover {
@@ -186,6 +205,16 @@ body {
     height: auto;
     object-fit: contain;
     display: block;
+    /* Forbedre bildevisning på mobil */
+    max-width: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* Forhindre bildeseleksjon */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    /* Forhindre høyreklikkmeny */
+    -webkit-touch-callout: none;
 }
 
 /* === Slogans === */
@@ -193,7 +222,7 @@ body {
     position: absolute;
     font-family: var(--main-font);
     font-size: clamp(1rem, 2vw, 1rem);
-  font-weight: medium;
+    font-weight: medium;
     color: var(--accent-color);
     text-shadow: 
         2px 2px 3px rgba(0, 0, 0, 0.315),
@@ -214,6 +243,10 @@ body {
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 10px rgba(0, 0, 0, 0.096);
+    /* Forhindre tekst-seleksjon */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 .slogan.show {
@@ -234,6 +267,8 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
 }
 
 .win-content {
@@ -272,6 +307,14 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    /* Forbedre bildevisning på mobil */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* Forhindre bildeseleksjon */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .win-title {
@@ -290,6 +333,10 @@ body {
     margin-bottom: 30px;
     text-align: justify;
     max-width: 650px;
+    /* Tillat tekst-seleksjon i win message */
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
 }
 
 .win-message p {
@@ -341,6 +388,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
 }
 
 .apple-message-content {
@@ -360,6 +409,14 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    /* Forbedre bildevisning på mobil */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* Forhindre bildeseleksjon */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .apple-close-btn {
@@ -374,6 +431,11 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
     min-width: 100px;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
+    /* Forhindre tap-highlight på mobil */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 .apple-close-btn:hover {
@@ -418,6 +480,14 @@ body {
     filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.493)) drop-shadow(0 0 2px black);
     border-radius: 50%;
     animation: float 3s ease-in-out infinite;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
+    /* Forhindre tap-highlight på mobil */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    /* Forhindre bildeseleksjon */
+    -webkit-user-select: none;
+    -moz-user-select: none;
 }
 
 .apple:hover {
@@ -456,6 +526,11 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     margin: 5px;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
+    /* Forhindre tap-highlight på mobil */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 .forward-button:hover {
@@ -474,6 +549,11 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     margin: 5px;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
+    /* Forhindre tap-highlight på mobil */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
 .reset-button:hover {
@@ -491,6 +571,8 @@ body {
     align-items: center;
     z-index: 100;
     transition: all 0.3s ease;
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
 }
 
 .corner-logo:hover {
@@ -510,6 +592,14 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    /* Forbedre bildevisning på mobil */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* Forhindre bildeseleksjon */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .logo-tagline {
@@ -522,10 +612,19 @@ body {
     max-width: 100px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     line-height: 1.2;
+    /* Forhindre tekst-seleksjon */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 
 /* === Responsiv design === */
 @media (max-width: 480px) {
+    body {
+        /* Forhindre overscrolling på mobil */
+        overscroll-behavior: none;
+    }
+    
     .win-content {
         padding: 15px;
         margin: 10px;
@@ -550,5 +649,11 @@ body {
     .reset-button {
         width: 100%;
         max-width: 250px;
+    }
+    
+    /* Forbedre tapp-responsivitet på små skjermer */
+    .click-button {
+        min-width: 120px;
+        min-height: 120px;
     }
 }
