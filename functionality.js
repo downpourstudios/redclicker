@@ -590,7 +590,7 @@ function resetGame() {
     document.getElementById('progressFill').style.width = '0%';
 
     // Reset Marie image
-    const baseSize = window.innerWidth < 480 ? 100 : 120; // Matchende base størrelse
+    const baseSize = window.innerWidth < 480 ? 80 : 100; // Matchende base størrelse
     const gameImage = document.getElementById('gameImage');
     gameImage.style.width = baseSize + 'px';
     gameImage.style.left = '50%';
@@ -678,6 +678,7 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
 
 
