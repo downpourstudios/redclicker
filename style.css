@@ -22,42 +22,18 @@
 
 /* Fallback til tekst hvis emoji ikke vises */
 @supports not (font-family: "Apple Color Emoji") {
-    .emoji-fallback[data-emoji="tannhelse"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="palestina"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="strom"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="penger"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="natur"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="jobb"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="pensjon"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="hjelp"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="velferd"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="styrke"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="feiring"]::after {
-        content: " ";
-    }
-    .emoji-fallback[data-emoji="kul"]::after {
-        content: " ";
-    }
+    .emoji-fallback[data-emoji="tannhelse"]::after { content: " "; }
+    .emoji-fallback[data-emoji="palestina"]::after { content: " "; }
+    .emoji-fallback[data-emoji="strom"]::after { content: " "; }
+    .emoji-fallback[data-emoji="penger"]::after { content: " "; }
+    .emoji-fallback[data-emoji="natur"]::after { content: " "; }
+    .emoji-fallback[data-emoji="jobb"]::after { content: " "; }
+    .emoji-fallback[data-emoji="pensjon"]::after { content: " "; }
+    .emoji-fallback[data-emoji="hjelp"]::after { content: " "; }
+    .emoji-fallback[data-emoji="velferd"]::after { content: " "; }
+    .emoji-fallback[data-emoji="styrke"]::after { content: " "; }
+    .emoji-fallback[data-emoji="feiring"]::after { content: " "; }
+    .emoji-fallback[data-emoji="kul"]::after { content: " "; }
 }
 
 /* === CSS VARIABLER === */
@@ -71,6 +47,7 @@
     --text-color: white;
     --button-text-color: #000000;
     --shadow-color: rgba(46, 46, 46, 0.3);
+
     --main-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --button-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --title-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -85,35 +62,55 @@
 }
 
 body {
-  font-family: var(--main-font);
-  background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow-x: hidden;     /* behold horisontal kontroll */
-  overflow-y: auto;       /* tillat vertikal scrolling */
-  padding: 10px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
+    font-family: var(--main-font);
+    background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 10px;
+    /* Forhindre tekst-seleksjon på mobil */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Forhindre tap-highlight på mobil */
+    -webkit-tap-highlight-color: transparent;
+}
+/* === START: BUTTON & SCROLL FIX CSS === */
+
+
+#forward-button {
+  position: fixed;          /* fester knappen til viewport */
+  bottom: 20px;             /* 20px fra bunnen */
+  left: 50%;                /* midtstilt horisontalt */
+  transform: translateX(-50%);
+  z-index: 1000;            /* over alt annet innhold */
+  max-width: 90%;           /* hindrer at knappen blir for stor på mobil */
+  box-sizing: border-box;
+}
+/* === SLUTT: BUTTON & SCROLL FIX CSS === */
+.game-container {
+    text-align: center;
+    color: var(--text-color);
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+    min-height: 100vh;           /* sørger for at container alltid fyller skjermen */
+    
+    /* Gir plass til knapp og litt buffer */
+    padding-bottom: clamp(100px, 15vh, 150px); 
+    
+    /* Forhindre zoom ved dobbelttrykk */
+    touch-action: manipulation;
+    
+    /* Sørg for at innhold flyter fint */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;  /* innhold starter øverst, knapp flyter uavhengig */
 }
 
-.game-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  max-width: 600px;
-  padding-bottom: 120px; /* gir plass til knapp og progress bar */
-  text-align: center;
-  color: var(--text-color);
-  position: relative;
-  touch-action: manipulation;
 }
 
 /* === Tekst spacing === */
@@ -130,7 +127,7 @@ body {
     font-family: var(--main-font);
     font-size: clamp(1rem, 4vw, 1.5rem);
     font-weight: 400;
-    margin-bottom: 25px;
+    margin-bottom: 25px; 
     opacity: 0.9;
     line-height: 1.4;
 }
@@ -156,14 +153,16 @@ body {
 
 /* === Progress bar === */
 .progress-bar {
-  position: relative;
-  margin: 40px auto 0 auto;
-  width: 80%;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 25px;
-  overflow: hidden;
-  z-index: 15;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    overflow: hidden;
+    z-index: 15;
 }
 
 .progress-fill {
@@ -177,27 +176,30 @@ body {
 
 /* === Knapp === */
 .click-button {
-  margin-top: 30px;
-  margin-bottom: 40px;
-  width: clamp(120px, 25vw, 200px);
-  height: clamp(120px, 25vw, 200px);
-  border: none;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
-  color: var(--button-text-color);
-  font-family: var(--button-font);
-  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 8px 25px var(--shadow-color);
-  display: block;
-  line-height: 1.2;
-  padding: 10px;
-  z-index: 20;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
+    width: clamp(100px, 20vw, 180px);
+    height: clamp(100px, 20vw, 180px);
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
+    color: var(--button-text-color);
+    font-family: var(--button-font);
+    font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 8px 25px var(--shadow-color);
+    
+    /* Viktig for mobil og scroll */
+    position: fixed;
+    bottom: clamp(15px, 5vh, 30px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    
+    /* Touch og dynamikk */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    
 }
 
 .click-button:hover {
@@ -208,21 +210,7 @@ body {
 .click-button:active {
     transform: scale(0.95);
 }
-@media (max-width: 480px) {
-  .game-container {
-    padding: 20px;
-    min-height: auto;
-  }
 
-  .click-button {
-    width: 140px;
-    height: 140px;
-  }
-
-  .game-image {
-    bottom: 20px;
-  }
-}
 /* === Marie === */
 .game-image {
     position: absolute;
@@ -261,10 +249,11 @@ body {
     font-size: clamp(1rem, 2vw, 1rem);
     font-weight: medium;
     color: var(--accent-color);
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8),
-                 0px 0px 12px rgba(0, 0, 0, 0.6),
-                 -2px -2px 8px rgba(0, 0, 0, 0.8),
-                 0px 0px 20px rgba(0, 0, 0, 0.4);
+    text-shadow: 
+        2px 2px 8px rgba(0, 0, 0, 0.8),
+        0px 0px 12px rgba(0, 0, 0, 0.6),
+        -2px -2px 8px rgba(0, 0, 0, 0.8),
+        0px 0px 20px rgba(0, 0, 0, 0.4);
     pointer-events: none;
     opacity: 0;
     transform: translateY(20px) scale(0.8);
@@ -360,7 +349,7 @@ body {
 .win-message {
     font-family: var(--main-font);
     font-size: clamp(0.9rem, 2.5vw, 1rem);
-    line-height: 1.6;
+    line-height: 1;
     margin-bottom: 30px;
     text-align: center;
     max-width: 500px;
@@ -476,21 +465,21 @@ body {
 
 /* === Fade + shake animasjon for epleboks === */
 @keyframes fadeShake {
-    0% {
-        opacity: 0;
+    0% { 
+        opacity: 0; 
         transform: translate(-50%, -50%) translateY(20px) scale(0.9);
     }
-    30% {
-        opacity: 1;
+    30% { 
+        opacity: 1; 
         transform: translate(-50%, -50%) translateY(-5px) translateX(-3px) scale(1.02);
     }
-    50% {
+    50% { 
         transform: translate(-50%, -50%) translateY(0) translateX(3px) scale(1.01);
     }
-    70% {
+    70% { 
         transform: translate(-50%, -50%) translateY(-2px) translateX(-2px) scale(1);
     }
-    100% {
+    100% { 
         transform: translate(-50%, -50%) translateY(0) translateX(0) scale(1);
     }
 }
@@ -508,8 +497,7 @@ body {
     height: 40px;
     user-select: none;
     transition: transform 0.2s;
-    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.493)) 
-            drop-shadow(0 0 2px black);
+    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.493)) drop-shadow(0 0 2px black);
     border-radius: 50%;
     animation: float 3s ease-in-out infinite;
     /* Forhindre zoom ved dobbelttrykk */
@@ -653,37 +641,39 @@ body {
         /* Forhindre overscrolling på mobil */
         overscroll-behavior: none;
     }
-
+    
     .win-content {
         padding: 15px;
         margin: 10px;
     }
-
+    
     .win-message {
         font-size: 1rem;
         text-align: center;
     }
-
+    
     .apple-message-box {
         max-width: 280px;
         padding: 15px;
     }
-
+    
     .win-buttons {
         flex-direction: column;
         width: 100%;
     }
-
+    
     .forward-button,
     .reset-button {
         width: 100%;
         max-width: 250px;
     }
-
+    
     /* Forbedre tapp-responsivitet på små skjermer */
     .click-button {
         min-width: 120px;
         min-height: 120px;
     }
 }
+
+
 
