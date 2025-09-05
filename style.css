@@ -48,9 +48,9 @@
     --button-text-color: #000000;
     --shadow-color: rgba(46, 46, 46, 0.3);
 
-    --main-font: 'Suisse', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --button-font: 'Suisse', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --title-font: 'Suisse', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --main-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --button-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --title-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * {
