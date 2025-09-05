@@ -18,41 +18,31 @@ const SETTINGS = {
     }
 };
 
-// Teller for sloganPop
-let sloganCounter = 0;
+// === INITIALISER LYDBIBLIOTEK ===
+const audioLibrary = {};
 
-// === LYDFUNKSJON ===
-function playSound(soundKey) {
-    const soundFile = SETTINGS.sounds[soundKey];
-    if (!soundFile || soundFile === '') return; // Ingen lyd hvis tom
-    
-    try {
-        // Håndter spesialtilfelle: sloganPop
-        if (soundKey === "sloganPop") {
-            sloganCounter++;
-
-            // Bare spill hver tredje gang (3, 6, 9, …)
-            if (sloganCounter % 1 !== 1) return;
-        }
-
-        const audio = new Audio(soundFile);
-
-        if (soundKey === "sloganPop") {
-            // Litt variasjon i volum (0.25–0.5)
-            audio.volume = 0.15 + Math.random() * 0.25;
-
-            // Variasjon i playback rate (0.9–1.1 gir naturlig pitch-ulikhet)
-            audio.playbackRate = 0.5 + Math.random() * 1;
-        } else {
-            // Standard volum for alt annet
-            audio.volume = 0.1;
-        }
-
-        audio.play().catch(e => console.log('Lyd kunne ikke spilles:', e));
-    } catch (e) {
-        console.log('Lydfeil:', e);
-    }
+// Først lager vi Audio-objekter for alle lydfilene i SETTINGS.sounds
+for (const key in SETTINGS.sounds) {
+    if (!SETTINGS.sounds[key]) continue;
+    const audio = new Audio(SETTINGS.sounds[key]);
+    audio.volume = 0.05;         // standardvolum for alle lyder
+    audio.preload = 'auto';     // forhåndslast lyden
+    audioLibrary[key] = audio;
 }
+
+// === SPILL LYD FUNKSJON ===
+function playSound(key) {
+    const audio = audioLibrary[key];
+    if (!audio) return;
+
+    // Valgfritt: legg til variasjon i volum/pitch
+    audio.volume = 0.15 + Math.random() * 0.1;      // tilfeldig mellom 0.15 og 0.25
+    audio.playbackRate = 0.9 + Math.random() * 0.2; // tilfeldig pitch mellom 0.9 og 1.1
+
+    audio.currentTime = 0; // start fra begynnelsen
+    audio.play().catch(e => console.log('Lyd kunne ikke spilles:', e));
+}
+
 
 
 // === GLOBALE VARIABLER ===
@@ -723,6 +713,7 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
 
 
