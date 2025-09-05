@@ -1,9 +1,9 @@
 // === INNSTILLINGER ===
 const SETTINGS = {
     forwardUrl: 'https://roedt.no/stem',
-   shareUrl: 'https://downpourstudios.github.io/redclicker/',
+    shareUrl: 'https://downpourstudios.github.io/redclicker/',
     winImage: 'logo_hvit.png',
-     gameImage: './marie.png', // viktig med ./ her
+    gameImage: './marie.png', // viktig med ./ her
     forwardButtonText: 'Del med en venn →',
     openInNewTab: true,
     logo: { 
@@ -28,7 +28,7 @@ async function shareOrCopy(e) {
     } catch (err) {
       // bruker avbrøt / ikke støttet -> faller ned til kopiering
     }
-
+  }
 
   // 2) Kopiér til utklippstavla
   try {
@@ -52,9 +52,6 @@ async function shareOrCopy(e) {
     setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1600);
   }
 }
-
-}
-};
 
 // === GLOBALE VARIABLER ===
 let clickCount = 0;
@@ -527,6 +524,7 @@ window.onload = function() {
     
     console.log('Styrkeklikker\'n er klar for mobil! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
 };
+
 
 
 
