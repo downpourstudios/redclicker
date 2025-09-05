@@ -45,7 +45,7 @@ function playSound(soundKey) {
             audio.playbackRate = 0.5 + Math.random() * 1;
         } else {
             // Standard volum for alt annet
-            audio.volume = 0.2;
+            audio.volume = 0.1;
         }
 
         audio.play().catch(e => console.log('Lyd kunne ikke spilles:', e));
@@ -723,6 +723,7 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
 
 
