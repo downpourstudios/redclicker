@@ -25,7 +25,7 @@ const audioLibrary = {};
 for (const key in SETTINGS.sounds) {
     if (!SETTINGS.sounds[key]) continue;
     const audio = new Audio(SETTINGS.sounds[key]);
-    audio.volume = 0.05;         // standardvolum for alle lyder
+    audio.volume = 0.01;         // standardvolum for alle lyder
     audio.preload = 'auto';     // forhåndslast lyden
     audioLibrary[key] = audio;
 }
@@ -34,10 +34,6 @@ for (const key in SETTINGS.sounds) {
 function playSound(key) {
     const audio = audioLibrary[key];
     if (!audio) return;
-
-    // Valgfritt: legg til variasjon i volum/pitch
-    audio.volume = 0.15 + Math.random() * 0.1;      // tilfeldig mellom 0.15 og 0.25
-    audio.playbackRate = 0.9 + Math.random() * 0.2; // tilfeldig pitch mellom 0.9 og 1.1
 
     audio.currentTime = 0; // start fra begynnelsen
     audio.play().catch(e => console.log('Lyd kunne ikke spilles:', e));
@@ -713,6 +709,7 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
 
 
