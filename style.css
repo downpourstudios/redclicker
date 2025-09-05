@@ -61,15 +61,24 @@
     touch-action: manipulation;
 }
 
+html {
+    /* Tillat vertikal scrolling for tilfeller hvor innholdet blir for høyt */
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+}
+
 body {
     font-family: var(--main-font);
     background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    padding: 10px;
+    align-items: flex-start; /* Endret fra center til flex-start */
+    padding: 20px 10px 20px 10px; /* Økt topp/bunn padding */
+    /* Tillat scrolling hvis innholdet blir for høyt */
+    overflow-x: hidden;
+    overflow-y: auto;
     /* Forhindre tekst-seleksjon på mobil */
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -77,6 +86,8 @@ body {
     user-select: none;
     /* Forhindre tap-highlight på mobil */
     -webkit-tap-highlight-color: transparent;
+    /* Forbedre scrolling på iOS */
+    -webkit-overflow-scrolling: touch;
 }
 
 .game-container {
@@ -85,6 +96,10 @@ body {
     position: relative;
     max-width: 600px;
     width: 100%;
+    /* Sørg for at containeren ikke blir for høy */
+    max-height: none;
+    /* Legg til margin for å sentere bedre når det er plass */
+    margin: auto 0;
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
 }
@@ -92,18 +107,18 @@ body {
 /* === Tekst spacing === */
 .game-title {
     font-family: var(--title-font);
-    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     text-shadow: 2px 2px 4px var(--shadow-color);
     line-height: 1.3;
 }
 
 .game-description {
     font-family: var(--main-font);
-    font-size: clamp(1rem, 4vw, 1.5rem);
+    font-size: clamp(0.9rem, 3.5vw, 1.3rem);
     font-weight: 400;
-    margin-bottom: 25px; 
+    margin-bottom: 20px; 
     opacity: 0.9;
     line-height: 1.4;
 }
@@ -111,18 +126,19 @@ body {
 /* === Visual separator === */
 .header-divider {
     width: 80%;
-    height: 4px;
+    height: 3px;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    margin: 0 auto 40px auto;
+    margin: 0 auto 30px auto;
 }
 
-/* === Game area === */
+/* === Game area med bedre responsivitet === */
 .game-area {
     position: relative;
-    height: clamp(300px, 45vh, 400px);
+    /* Bruk viewport-basert høyde, men sett maksimum og minimum */
+    height: clamp(250px, 35vh, 350px);
     width: 100%;
-    margin-top: 50px;
-    margin-bottom: 30px;
+    margin-top: 30px;
+    margin-bottom: 20px;
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
 }
@@ -130,11 +146,11 @@ body {
 /* === Progress bar === */
 .progress-bar {
     position: absolute;
-    bottom: 20px;
+    bottom: 15px;
     left: 50%;
     transform: translateX(-50%);
     width: 80%;
-    height: 10px;
+    height: 8px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 25px;
     overflow: hidden;
@@ -152,22 +168,22 @@ body {
 
 /* === Knapp === */
 .click-button {
-    width: clamp(120px, 25vw, 200px);
-    height: clamp(120px, 25vw, 200px);
+    width: clamp(100px, 20vw, 160px);
+    height: clamp(100px, 20vw, 160px);
     border: none;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
     color: var(--button-text-color);
     font-family: var(--button-font);
-    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    font-size: clamp(0.8rem, 2vw, 1.1rem);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 8px 25px var(--shadow-color);
-    margin: 20px auto;
+    box-shadow: 0 6px 20px var(--shadow-color);
+    margin: 15px auto;
     display: block;
     line-height: 1.2;
-    padding: 10px;
+    padding: 8px;
     z-index: 20;
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
@@ -189,10 +205,10 @@ body {
 /* === Marie === */
 .game-image {
     position: absolute;
-    bottom: 30px;
+    bottom: 25px;
     left: 50%;
     transform: translateX(-50%);
-    width: clamp(80px, 15vw, 100px);
+    width: clamp(70px, 12vw, 90px);
     height: auto;
     transition: all 0.3s ease;
     pointer-events: none;
@@ -221,7 +237,7 @@ body {
 .slogan {
     position: absolute;
     font-family: var(--main-font);
-    font-size: clamp(1rem, 2vw, 1rem);
+    font-size: clamp(0.9rem, 1.8vw, 1rem);
     font-weight: medium;
     color: var(--accent-color);
     text-shadow: 
@@ -234,10 +250,10 @@ body {
     transform: translateY(20px) scale(0.8);
     transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 1);
     z-index: 25;
-    max-width: 280px;
+    max-width: 250px;
     text-align: center;
-    padding: 8px 12px;
-    border-radius: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
     /* Forhindre tekst-seleksjon */
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -246,7 +262,7 @@ body {
 
 .slogan.show {
     opacity: 1;
-    transform: translateY(-100px) scale(1);
+    transform: translateY(-80px) scale(1);
 }
 
 /* === Win screen === */
@@ -262,14 +278,17 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    /* Tillat scrolling i win screen også */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
 }
 
 .win-content {
     background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
-    padding: clamp(20px, 4vw, 40px);
-    border-radius: 20px;
+    padding: clamp(15px, 3vw, 30px);
+    border-radius: 15px;
     text-align: center;
     max-width: 600px;
     width: 100%;
@@ -280,6 +299,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Sentrer win content vertikalt i tilgjengelig plass */
+    margin: auto;
 }
 
 .win-text-container {
@@ -289,12 +310,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    -webkit-overflow-scrolling: touch;
 }
 
 .win-image {
-    width: clamp(60px, 12vw, 80px);
-    height: clamp(60px, 12vw, 80px);
-    margin-bottom: 20px;
+    width: clamp(50px, 10vw, 70px);
+    height: clamp(50px, 10vw, 70px);
+    margin-bottom: 15px;
     flex-shrink: 0;
 }
 
@@ -314,18 +336,18 @@ body {
 
 .win-title {
     font-family: var(--title-font);
-    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
     font-weight: bold;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     text-shadow: 2px 2px 4px var(--shadow-color);
     line-height: 1.3;
 }
 
 .win-message {
     font-family: var(--main-font);
-    font-size: clamp(0.9rem, 2.5vw, 1rem);
-    line-height: 1;
-    margin-bottom: 30px;
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    line-height: 1.5;
+    margin-bottom: 25px;
     text-align: center;
     max-width: 500px;
     /* Tillat tekst-seleksjon i win message */
@@ -335,7 +357,7 @@ body {
 }
 
 .win-message p {
-    margin-bottom: 18px;
+    margin-bottom: 15px;
 }
 
 .win-message p:last-child {
@@ -355,9 +377,9 @@ body {
 .win-buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 /* === Epleboks === */
@@ -370,14 +392,15 @@ body {
     background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
     color: white;
     border: 2px solid white;
-    border-radius: 20px;
-    max-width: 350px;
-    padding: 20px;
+    border-radius: 15px;
+    max-width: 320px;
+    width: 90vw;
+    padding: 18px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     word-break: break-word;
     white-space: normal;
     font-family: var(--main-font);
-    font-size: clamp(0.9rem, 2vw, 1rem);
+    font-size: clamp(0.85rem, 1.8vw, 0.95rem);
     line-height: 1.5;
     text-align: center;
     display: flex;
@@ -388,12 +411,12 @@ body {
 }
 
 .apple-message-content {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .apple-image {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     margin: 0 auto 10px auto;
     display: flex;
     align-items: center;
@@ -418,14 +441,14 @@ body {
     background: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
     color: var(--button-text-color);
     border: none;
-    border-radius: 25px;
-    padding: 12px 24px;
-    font-size: 14px;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
     font-family: var(--button-font);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 100px;
+    min-width: 80px;
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
     /* Forhindre tap-highlight på mobil */
@@ -468,11 +491,11 @@ body {
     position: absolute;
     cursor: pointer;
     z-index: 12;
-    width: 30px;
-    height: 40px;
+    width: 28px;
+    height: 35px;
     user-select: none;
     transition: transform 0.2s;
-    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.493)) drop-shadow(0 0 2px black);
+    filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 2px black);
     border-radius: 50%;
     animation: float 3s ease-in-out infinite;
     /* Forhindre zoom ved dobbelttrykk */
@@ -498,13 +521,13 @@ body {
         transform: translateY(0px) rotate(0deg);
     }
     25% {
-        transform: translateY(-8px) rotate(1deg);
+        transform: translateY(-6px) rotate(1deg);
     }
     50% {
-        transform: translateY(-4px) rotate(-1deg);
+        transform: translateY(-3px) rotate(-1deg);
     }
     75% {
-        transform: translateY(-12px) rotate(0.5deg);
+        transform: translateY(-9px) rotate(0.5deg);
     }
 }
 
@@ -513,14 +536,14 @@ body {
     background: linear-gradient(135deg, var(--progress-color), var(--progress-color));
     color: #000000;
     border: none;
-    padding: clamp(12px, 3vw, 15px) clamp(20px, 5vw, 30px);
-    border-radius: 25px;
+    padding: clamp(10px, 2.5vw, 13px) clamp(18px, 4vw, 25px);
+    border-radius: 20px;
     font-family: var(--button-font);
-    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    font-size: clamp(0.8rem, 2vw, 1rem);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin: 5px;
+    margin: 4px;
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
     /* Forhindre tap-highlight på mobil */
@@ -537,13 +560,13 @@ body {
     background: rgba(255,255,255,0.2);
     color: var(--text-color);
     border: 2px solid var(--text-color);
-    padding: clamp(10px, 2.5vw, 12px) clamp(18px, 4vw, 25px);
-    border-radius: 25px;
+    padding: clamp(8px, 2vw, 10px) clamp(16px, 3.5vw, 22px);
+    border-radius: 20px;
     font-family: var(--button-font);
-    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-size: clamp(0.75rem, 1.8vw, 0.9rem);
     cursor: pointer;
     transition: all 0.3s ease;
-    margin: 5px;
+    margin: 4px;
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
     /* Forhindre tap-highlight på mobil */
@@ -559,8 +582,8 @@ body {
 /* === Logo i hjørnet === */
 .corner-logo {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 15px;
+    right: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -571,13 +594,13 @@ body {
 }
 
 .corner-logo:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 .logo-image {
-    width: clamp(40px, 8vw, 60px);
-    height: clamp(40px, 8vw, 60px);
-    margin-bottom: 8px;
+    width: clamp(35px, 6vw, 50px);
+    height: clamp(35px, 6vw, 50px);
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -596,12 +619,12 @@ body {
 
 .logo-tagline {
     font-family: var(--main-font);
-    font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+    font-size: clamp(0.55rem, 1.2vw, 0.7rem);
     font-weight: 300;
     color: var(--text-color);
     text-align: center;
     opacity: 0.9;
-    max-width: 100px;
+    max-width: 90px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     line-height: 1.2;
     /* Forhindre tekst-seleksjon */
@@ -615,21 +638,34 @@ body {
     body {
         /* Forhindre overscrolling på mobil */
         overscroll-behavior: none;
+        padding: 15px 10px 60px 10px; /* Mer bunn-padding på mobil */
+    }
+    
+    .game-container {
+        margin: 0; /* Fjern auto margin på mobil */
+    }
+    
+    .game-area {
+        height: clamp(200px, 30vh, 280px); /* Mindre høyde på mobil */
+        margin-top: 20px;
+        margin-bottom: 15px;
     }
     
     .win-content {
-        padding: 15px;
+        padding: 12px;
         margin: 10px;
+        border-radius: 12px;
     }
     
     .win-message {
-        font-size: 1rem;
+        font-size: 0.9rem;
         text-align: center;
     }
     
     .apple-message-box {
         max-width: 280px;
         padding: 15px;
+        border-radius: 12px;
     }
     
     .win-buttons {
@@ -640,12 +676,55 @@ body {
     .forward-button,
     .reset-button {
         width: 100%;
-        max-width: 250px;
+        max-width: 220px;
     }
     
     /* Forbedre tapp-responsivitet på små skjermer */
     .click-button {
-        min-width: 120px;
-        min-height: 120px;
+        min-width: 100px;
+        min-height: 100px;
+    }
+    
+    /* Mindre logo på mobil */
+    .corner-logo {
+        bottom: 10px;
+        right: 10px;
+    }
+}
+
+/* === Extra små skjermer === */
+@media (max-width: 360px) {
+    .game-title {
+        font-size: 1.1rem;
+    }
+    
+    .game-description {
+        font-size: 0.85rem;
+    }
+    
+    .game-area {
+        height: clamp(180px, 25vh, 250px);
+    }
+}
+
+/* === Høye skjermer (talle telefoner) === */
+@media (min-height: 800px) {
+    body {
+        align-items: center; /* Sentrer innholdet vertikalt på høye skjermer */
+    }
+    
+    .game-area {
+        height: clamp(280px, 40vh, 400px); /* Større spill-område på høye skjermer */
+    }
+}
+
+/* === Svært brede skjermer === */
+@media (min-width: 1200px) {
+    .game-container {
+        max-width: 700px;
+    }
+    
+    .game-area {
+        height: clamp(350px, 45vh, 450px);
     }
 }
