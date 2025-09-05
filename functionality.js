@@ -13,7 +13,7 @@ const SETTINGS = {
     // === LYDINNSTILLINGER ===
     sounds: {
         winScreen: 'winscreen.mp3', // La stå tom eller legg inn filnavn som 'win.mp3'
-        sloganPop: 'eplepop.mp3', // La stå tom eller legg inn filnavn som 'pop.mp3'
+        sloganPop: 'durt.wav', // La stå tom eller legg inn filnavn som 'pop.mp3'
         applePop: 'wrongsound.mp3' // La stå tom eller legg inn filnavn som 'apple.mp3'
     }
 };
@@ -32,7 +32,7 @@ function playSound(soundKey) {
             sloganCounter++;
 
             // Bare spill hver tredje gang (3, 6, 9, …)
-            if (sloganCounter % 1 !== 0) return;
+            if (sloganCounter % 1 !== 1) return;
         }
 
         const audio = new Audio(soundFile);
@@ -723,6 +723,7 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
 
 
 
