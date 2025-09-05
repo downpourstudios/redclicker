@@ -2,7 +2,7 @@
 const SETTINGS = {
     forwardUrl: 'https://roedt.no/stem',
     winImage: 'logo_hvit.png',
-    gameImage: 'marie_utklipp2.png',
+    gameImage: './marie_utklipp2.png',
     forwardButtonText: 'Del med en venn →',
     openInNewTab: true,
     logo: { 
@@ -201,9 +201,6 @@ function showWinScreen() {
         
         <p>Din stemme har mye å si for å drive frem den forandringen som trengs. Vi lever i et forskjells-Norge, hvor naturen bygges ned bit for bit og verden ikke gjør alt som trengs for å stanse et pågående folkemord.</p>
         
-        <p>Det trengs et sterkt Rødt for å få til et vendepunkt. Vi kjemper om direktemandat i en lang rekke fylker og om utjevningsmandat i hele landet. Din stemme til Rødt kan være den avgjørende.</p>
-        <p>Og uansett gir hver eneste stemme oss større muskler etter valget.</p>
-        
         <p>Les mer om hva Rødt vil her: <a href="https://roedt.no/stem" target="_blank">https://roedt.no/stem</a></p>
         
         <p>Vi lover å bruke den styrken du gir oss.</p> 
@@ -323,10 +320,10 @@ function appleClick(apple) {
             <img src="freple.png" alt="Eple">
         </div>
         <div class="apple-message-content">
-            <p>Ai, hold deg unna de epleskrottene!</p>
-            <p>Du får ikke minuspoeng, men de sakker deg ned litt og får deg til å bruke unødvendige krefter og ressurser...</p>
+            <p>Ai, der kom du borti FRP's råtne politikk.</p>
+            <p>Nå mister du litt poeng til fellesskapet.</p>
         </div>
-        <button id="closeAppleBox" class="apple-close-btn">Lukk</button>
+        <button id="closeAppleBox" class="apple-close-btn">Kast vekk eplet</button>
     `;
     
     document.body.appendChild(box);
