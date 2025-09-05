@@ -68,7 +68,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: auto;
+    overflow: hidden;
     padding: 10px;
     /* Forhindre tekst-seleksjon på mobil */
     -webkit-user-select: none;
@@ -78,39 +78,15 @@ body {
     /* Forhindre tap-highlight på mobil */
     -webkit-tap-highlight-color: transparent;
 }
-/* === START: BUTTON & SCROLL FIX CSS === */
 
-
-#forward-button {
-  position: fixed;          /* fester knappen til viewport */
-  bottom: 40px;             /* 20px fra bunnen */
-  left: 50%;                /* midtstilt horisontalt */
-  transform: translateX(-50%);
-  z-index: 1000;            /* over alt annet innhold */
-  max-width: 90%;           /* hindrer at knappen blir for stor på mobil */
-  box-sizing: border-box;
-}
-/* === SLUTT: BUTTON & SCROLL FIX CSS === */
 .game-container {
     text-align: center;
     color: var(--text-color);
     position: relative;
-    max-width: 500px;
+    max-width: 600px;
     width: 100%;
-    min-height: 100vh;           /* sørger for at container alltid fyller skjermen */
-    
-    /* Gir plass til knapp og litt buffer */
-    padding-bottom: clamp(100px, 15vh, 150px); 
-    
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
-    
-    /* Sørg for at innhold flyter fint */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;  /* innhold starter øverst, knapp flyter uavhengig */
-}
-
 }
 
 /* === Tekst spacing === */
@@ -143,10 +119,10 @@ body {
 /* === Game area === */
 .game-area {
     position: relative;
-    height: clamp(300px, 45vh, 00px);
+    height: clamp(300px, 45vh, 400px);
     width: 100%;
     margin-top: 50px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
 }
@@ -176,30 +152,29 @@ body {
 
 /* === Knapp === */
 .click-button {
-    width: clamp(100px, 20vw, 180px);
-    height: clamp(100px, 20vw, 180px);
+    width: clamp(120px, 25vw, 200px);
+    height: clamp(120px, 25vw, 200px);
     border: none;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
     color: var(--button-text-color);
     font-family: var(--button-font);
-    font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.2s ease;
     box-shadow: 0 8px 25px var(--shadow-color);
-    
-    /* Viktig for mobil og scroll */
-    position: fixed;
-    bottom: clamp(15px, 5vh, 30px);
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    
-    /* Touch og dynamikk */
+    margin: 20px auto;
+    display: block;
+    line-height: 1.2;
+    padding: 10px;
+    z-index: 20;
+    /* Forhindre zoom ved dobbelttrykk */
     touch-action: manipulation;
+    /* Forhindre tap-highlight på mobil */
     -webkit-tap-highlight-color: transparent;
+    /* Forbedre tapprespons på mobil */
     -webkit-touch-callout: none;
-    
 }
 
 .click-button:hover {
@@ -674,7 +649,3 @@ body {
         min-height: 120px;
     }
 }
-
-
-
-
