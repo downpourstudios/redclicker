@@ -13,8 +13,8 @@ const SETTINGS = {
     // === LYDINNSTILLINGER ===
     sounds: {
         winScreen: 'winscreen.mp3', // La stå tom eller legg inn filnavn som 'win.mp3'
-        sloganPop: '', // La stå tom eller legg inn filnavn som 'pop.mp3'
-        applePop: 'eplepop.mp3' // La stå tom eller legg inn filnavn som 'apple.mp3'
+        sloganPop: 'eplepop.mp3', // La stå tom eller legg inn filnavn som 'pop.mp3'
+        applePop: 'wrongsound.mp3' // La stå tom eller legg inn filnavn som 'apple.mp3'
     }
 };
 
@@ -700,3 +700,4 @@ window.onload = function() {
     console.log('Styrkeklikker\'n er klar! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
     console.log('Lydinnstillinger:', SETTINGS.sounds);
 };
+
