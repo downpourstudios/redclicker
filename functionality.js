@@ -1,7 +1,7 @@
 // === INNSTILLINGER ===
 const SETTINGS = {
     forwardUrl: 'https://roedt.no/stem',
-    shareUrl: 'https://downpourstudios.github.io/redclicker/',
+    shareUrl: 'https://rodtakershus.github.io/fellesskap/',
     winImage: 'logo_hvit.png',
     gameImage: './marie.png', // viktig med ./ her
     forwardButtonText: 'Del med en venn →',
@@ -20,8 +20,8 @@ async function shareOrCopy(e) {
   if (navigator.share) {
     try {
       await navigator.share({
-        title: 'Styrkeklikker’n',
-        text: 'Gjør Marie stor og sterk 💪',
+        title: 'Del styrken din med Rødt',
+        text: 'Hjelp Rødt og Marie med å bli store og sterke!',
         url
       });
       return;
@@ -58,7 +58,7 @@ let clickCount = 0;
 const maxClicks = 100;
 let slogans = [];
 let apples = [];
-const maxSlogansOnScreen = 3;
+const maxSlogansOnScreen = 2;
 const maxApplesOnScreen = 4;
 let appleMessageBox = null;
 let appleSpawnInterval;
@@ -524,6 +524,7 @@ window.onload = function() {
     
     console.log('Styrkeklikker\'n er klar for mobil! Emoji støtte:', emojiSupported ? 'Ja' : 'Nei');
 };
+
 
 
 
